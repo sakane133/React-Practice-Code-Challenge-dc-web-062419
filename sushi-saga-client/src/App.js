@@ -9,7 +9,8 @@ class App extends Component {
 
   state = {
     sushis: [],
-    sushiIndex: 0
+    sushiIndex: 0,
+    budget: 100
   }
 
   componentDidMount(){
@@ -28,30 +29,33 @@ class App extends Component {
     }
 
     showMoreButt = () => {
+      if(this.state.sushiIndex + 4 < this.state.sushis.length){
       return this.setState({sushiIndex: this.state.sushiIndex + 4})
+      }
+      else{
+        return this.setState({sushiIndex: 0})
+      }
     }
 
-    eatSushi = (id) => {
+    eatSushi = (obj) => {
       let newSush = this.state.sushis.map(sushi => {
-        if(id === sushi.id){
+        if(obj === sushi){
           sushi.eaten = true
-          return sushi
-         
-        }
-        else {
-          return sushi
+          if(this.state.budget >= obj.price ){
+          this.setState({
+        budget: this.state.budget - sushi.price
+      })
+      return sushi 
+    }
+    else{
+      alert("not enough money")
+    }
         }
       })
-      this.setState({sushis: newSush})
     }
 
     emptyPlates = () => {
       return this.state.sushis.filter(sush => sush.eaten)
-    }
-
-    emptyPrice = () => {
-      let p = this.state.sushis.filter(sush => sush.eaten)
-      return p.map(sushi => sushi.price)
     }
 
   render(){
@@ -60,12 +64,12 @@ class App extends Component {
         <SushiContainer  sushis={this.showFour()}
            moreButton={this.showMoreButt}
            eatSushi={this.eatSushi}
-           price={this.emptyPrice}
+           budget={this.state.budget}
            />
         <Table 
-        price={this.emptyPrice()}
         emptyPlates={this.emptyPlates()}
         sushi={this.state.sushis}
+        budget={this.state.budget}
         />
       </div>
     );
