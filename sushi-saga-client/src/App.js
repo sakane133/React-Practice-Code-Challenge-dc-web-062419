@@ -32,7 +32,6 @@ class App extends Component {
     }
 
     eatSushi = (id) => {
-   
       let newSush = this.state.sushis.map(sushi => {
         if(id === sushi.id){
           sushi.eaten = true
@@ -46,13 +45,28 @@ class App extends Component {
       this.setState({sushis: newSush})
     }
 
-  render() {
+    emptyPlates = () => {
+      return this.state.sushis.filter(sush => sush.eaten)
+    }
+
+    emptyPrice = () => {
+      let p = this.state.sushis.filter(sush => sush.eaten)
+      return p.map(sushi => sushi.price)
+    }
+
+  render(){
     return (
       <div className="app">
         <SushiContainer  sushis={this.showFour()}
            moreButton={this.showMoreButt}
-           eatSushi={this.eatSushi}/>
-        <Table />
+           eatSushi={this.eatSushi}
+           price={this.emptyPrice}
+           />
+        <Table 
+        price={this.emptyPrice()}
+        emptyPlates={this.emptyPlates()}
+        sushi={this.state.sushis}
+        />
       </div>
     );
   }
